@@ -1,0 +1,26 @@
+[package]
+name = "batch_encryption_short"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ark-ec = { version = "0.5", features = ["parallel"] }
+ark-ff = { version = "0.5", features = ["parallel"] }
+ark-poly = { version = "0.5", features = ["parallel"] }
+ark-serialize = "0.5"
+ark-std = { version = "0.5", features = ["parallel"] }
+rayon = "1.10"
+sha2 = "0.10"
+be_common = { path = "../be_common" }
+
+[dev-dependencies]
+ark-bls12-381 = "0.5"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "nizk_dlog_bench"
+harness = false
+
+[[bench]]
+name = "batch_enc_short_bench"
+harness = false
