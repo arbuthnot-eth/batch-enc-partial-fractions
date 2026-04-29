@@ -7,8 +7,8 @@ This repository implements both the (1) batch encryption and (2) batch encryptio
 
 | crate | Constructions | Ciphertext size | NIZK proof | Dec pairings |
 |---|---|---|---|---|
-| `batch_encryption` | 1 (§4.1) + 4 (§4.3, ciphertext-relation NIZK) | `2·\|G1\| + \|GT\|` | `2·\|G1\| + \|Fp\|` | 4·ell |
-| `batch_encryption_short` | 5 (§5, BE_short) + 6 (Schnorr DLOG NIZK) | `\|G1\| + \|GT\|` | `\|G1\| + \|Fp\|` | 3·ell |
+| `batch_encryption` | 1 (§4.1) + 4 (§4.3, ciphertext-relation NIZK) | `2·\|G1\| + \|GT\|` | `2·\|G1\| + \|Fp\|` | $4\ell$ |
+| `batch_encryption_short` | 5 (§5, BE_short) + 6 (Schnorr DLOG NIZK) | `\|G1\| + \|GT\|` | `\|G1\| + \|Fp\|` | $3\ell$ |
 
 ## Project Layout
 
