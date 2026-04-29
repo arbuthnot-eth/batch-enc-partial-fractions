@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "You may cite this repository as follows."
+title: "Implementation of Efficient Batch Threshold Encryption Using Partial Fraction Techniques"
+authors:
+  - family-names: "Boneh"
+    given-names: "Dan"
+  - family-names: "Nema"
+    given-names: "Rohit"
+  - family-names: "Roy"
+    given-names: "Arnab"
+  - family-names: "Tas"
+    given-names: "Ertem Nusret"
+year: 2026
+url: "https://github.com/entrohpy/batch-enc-partial-fractions"
+preferred-citation:
+  type: misc
+  title: "Implementation of Efficient Batch Threshold Encryption Using Partial Fraction Techniques"
+  authors:
+    - family-names: "Boneh"
+      given-names: "Dan"
+    - family-names: "Nema"
+      given-names: "Rohit"
+    - family-names: "Roy"
+      given-names: "Arnab"
+    - family-names: "Tas"
+      given-names: "Ertem Nusret"
+  year: 2026
+  notes: "\\url{https://github.com/entrohpy/batch-enc-partial-fractions}"
