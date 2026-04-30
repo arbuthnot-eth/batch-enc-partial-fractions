@@ -262,6 +262,7 @@ dependencies = [
  "batch_encryption_short",
  "be_common",
  "getrandom",
+ "js-sys",
  "rand",
  "wasm-bindgen",
 ]
