@@ -1,0 +1,21 @@
+[workspace]
+
+[package]
+name = "shade-sim"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+ark-bls12-381 = { version = "0.5", features = ["curve"] }
+ark-ec = "0.5"
+ark-ff = "0.5"
+ark-serialize = "0.5"
+ark-std = "0.5"
+batch_encryption_short = { path = "../../crates/batch_encryption_short" }
+be_common = { path = "../../crates/be_common" }
+rand = "0.8"
+
+[profile.release]
+opt-level = 3
+lto = true
