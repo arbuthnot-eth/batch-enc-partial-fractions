@@ -1,0 +1,22 @@
+[workspace]
+
+[package]
+name = "thunder-sim"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[dependencies]
+ark-bls12-381 = { version = "0.5", features = ["curve"] }
+ark-ec = "0.5"
+ark-serialize = "0.5"
+ark-std = "0.5"
+batch_encryption_short = { path = "../../crates/batch_encryption_short" }
+aes-gcm = "0.10"
+sha2 = "0.10"
+serde = { version = "1", features = ["derive"] }
+bincode = "1"
+
+[profile.release]
+opt-level = 3
+lto = true
