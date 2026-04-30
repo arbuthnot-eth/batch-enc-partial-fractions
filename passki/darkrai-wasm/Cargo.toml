@@ -1,0 +1,29 @@
+[workspace]
+
+[package]
+name = "darkrai-wasm"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2"
+getrandom = { version = "0.2", features = ["js"] }
+rand = "0.8"
+
+ark-bls12-381 = { version = "0.5", default-features = false, features = ["curve"] }
+ark-ec = { version = "0.5", default-features = false }
+ark-ff = { version = "0.5", default-features = false }
+ark-serialize = { version = "0.5", default-features = false }
+ark-std = { version = "0.5", default-features = false }
+
+batch_encryption_short = { path = "../../crates/batch_encryption_short" }
+be_common = { path = "../../crates/be_common" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
