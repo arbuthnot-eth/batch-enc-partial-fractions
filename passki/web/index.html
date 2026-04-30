@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Darkrai — batch threshold encryption bench</title>
+<style>
+  :root { color-scheme: dark; }
+  body { font: 14px/1.5 ui-monospace, monospace; background: #0b0b0f; color: #e7e7ee; margin: 2rem auto; max-width: 920px; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; margin-bottom: .25rem; }
+  .sub { color: #888; margin-bottom: 1.5rem; }
+  button { background: #1a1a22; color: #e7e7ee; border: 1px solid #333; padding: .5rem 1rem; cursor: pointer; font: inherit; margin-right: .5rem; margin-bottom: .5rem; }
+  button:hover { border-color: #666; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+  th, td { text-align: right; padding: .35rem .75rem; border-bottom: 1px solid #222; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: #aaa; font-weight: normal; border-bottom-color: #444; }
+  tr.running td { color: #ffb454; }
+  tr.fail td { color: #ff6b6b; }
+  #log { white-space: pre-wrap; color: #888; margin-top: 1rem; font-size: 12px; }
+  .pill { display: inline-block; padding: 1px 6px; border: 1px solid #333; border-radius: 3px; color: #888; font-size: 11px; }
+</style>
+</head>
+<body>
+  <h1>Darkrai <span class="pill">BE_short · BLS12-381 · wasm32</span></h1>
+  <div class="sub">Batch threshold encryption bench (ePrint 2026/674, Construction 5).</div>
+
+  <div>
+    <button id="run-all">Run all</button>
+    <button data-ell="4">ℓ=4</button>
+    <button data-ell="16">ℓ=16</button>
+    <button data-ell="64">ℓ=64</button>
+    <button data-ell="128">ℓ=128</button>
+    <button data-ell="256">ℓ=256</button>
+  </div>
+
+  <table id="results">
+    <thead>
+      <tr>
+        <th>ℓ</th>
+        <th>Setup</th>
+        <th>Encrypt total</th>
+        <th>Encrypt /msg</th>
+        <th>Pre-decrypt</th>
+        <th>Decrypt</th>
+        <th>CT</th>
+        <th>sbk</th>
+        <th>ek</th>
+        <th>dk</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div id="log"></div>
+
+<script type="module">
+import init, { version, bench_batch } from "../darkrai-wasm/pkg/darkrai_wasm.js";
+
+const log = (msg) => {
+  const el = document.getElementById("log");
+  el.textContent += msg + "\n";
+};
+
+const tbody = document.querySelector("#results tbody");
+
+const fmtMs = (ms) => ms < 1 ? `${(ms * 1000).toFixed(0)} µs` : `${ms.toFixed(2)} ms`;
+const fmtBytes = (b) => b < 1024 ? `${b} B` : `${(b / 1024).toFixed(2)} KB`;
+
+const renderRow = (ell, status, data) => {
+  let row = tbody.querySelector(`tr[data-ell="${ell}"]`);
+  if (!row) {
+    row = document.createElement("tr");
+    row.dataset.ell = ell;
+    tbody.appendChild(row);
+  }
+  row.className = status === "running" ? "running" : status === "fail" ? "fail" : "";
+  if (status === "running") {
+    row.innerHTML = `<td>${ell}</td><td colspan="9">running…</td>`;
+  } else if (status === "fail") {
+    row.innerHTML = `<td>${ell}</td><td colspan="9">${data}</td>`;
+  } else {
+    row.innerHTML = [
+      ell,
+      fmtMs(data.setup_ms),
+      fmtMs(data.encrypt_total_ms),
+      fmtMs(data.encrypt_per_ms),
+      fmtMs(data.pre_decrypt_ms),
+      fmtMs(data.decrypt_ms),
+      fmtBytes(data.ct_bytes),
+      fmtBytes(data.sbk_bytes),
+      fmtBytes(data.ek_bytes),
+      fmtBytes(data.dk_bytes),
+    ].map(c => `<td>${c}</td>`).join("");
+  }
+};
+
+const runOne = async (ell) => {
+  renderRow(ell, "running");
+  await new Promise(r => requestAnimationFrame(r));
+  try {
+    const json = bench_batch(ell);
+    const data = JSON.parse(json);
+    renderRow(ell, "ok", data);
+    return data;
+  } catch (e) {
+    renderRow(ell, "fail", String(e.message || e));
+    throw e;
+  }
+};
+
+const setBusy = (busy) => {
+  for (const b of document.querySelectorAll("button")) b.disabled = busy;
+};
+
+document.addEventListener("click", async (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  setBusy(true);
+  try {
+    if (btn.id === "run-all") {
+      tbody.innerHTML = "";
+      for (const ell of [4, 16, 64, 128, 256]) await runOne(ell);
+    } else if (btn.dataset.ell) {
+      await runOne(Number(btn.dataset.ell));
+    }
+  } finally {
+    setBusy(false);
+  }
+});
+
+(async () => {
+  await init();
+  log(version());
+  log("Click a batch size or 'Run all' to start.");
+})();
+</script>
+</body>
+</html>
